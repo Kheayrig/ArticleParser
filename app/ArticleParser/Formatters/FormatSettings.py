@@ -3,12 +3,31 @@ from enum import Enum
 
 
 class Brackets(Enum):
+    """
+    Перечисление скобок для оформления адреса ссылки.
+    Brackets.value[0] - открывающая скобка,
+    Brackets.value[1] - закрывающая скобка
+
+            Attributes:
+                none: отсутствие скобок = '', '',
+                round: круглые скобки = '(', ')',
+                square: квадратные скобки = '[', ']',
+    """
     none = '', '',
     round = '(', ')',
     square = '[', ']',
 
 
 class FormatSettings:
+    """ Настройки txt файла
+
+            Attributes:
+                str_len (int): длина строки в симолах = 80
+                h_separator (str): разделитель строки для заголовков = '\n\n'
+                p_separator (str): разделитель строки для абзацев = '\n\n'
+                a_has_link (bool): нужно ли печатать адрес ссылки = False
+                link_brackets (Brackets): скобки, которыми оформляется ссылка = Brackets.square
+    """
     str_len: int
     h_separator: str
     p_separator: str
@@ -24,12 +43,17 @@ class FormatSettings:
         self.link_brackets = link_brackets
 
     def to_json(self):
-        with open('to_docx_formatter.json', "w") as f:
-            json.dump(self, f, default=lambda o: o.json(), indent=2)
-        return json.dumps(self, default=lambda o: o.json(),
-                          indent=2)
+        """
+        Сериализует класс
+        :return: json str
+        """
+        return json.dumps(self, default=lambda o: o.json(), indent=2)
 
     def json(self):
+        """
+        dict аттрибутов для сериализации
+        :return: dict
+        """
         return {
             'str_len': self.str_len,
             'h_separator': self.h_separator,
@@ -40,6 +64,11 @@ class FormatSettings:
 
     @classmethod
     def from_json(cls, filepath):
+        """
+        Десереализует класс
+        :param filepath: путь, по которому лежит json
+        :return: FormatSettings()
+        """
         with open(filepath, "r") as f:
             json_data = json.load(f)
         return cls(json_data['str_len'], json_data['h_separator'],
@@ -48,6 +77,12 @@ class FormatSettings:
 
 
 class DocxSettings(FormatSettings):
+    """ Настройки docx файла
+
+                Attributes:
+                    font_size (int): размер шрифта = 14
+                    font (str): шрифт = 'Arial'
+        """
     font_size: int = 14
     font: str = 'Arial'
 
@@ -59,6 +94,10 @@ class DocxSettings(FormatSettings):
         self.font = font
 
     def json(self):
+        """
+                dict аттрибутов для сериализации
+                :return: dict
+                """
         return {
             **super().json(),
             'font_size': self.font_size,
@@ -67,6 +106,11 @@ class DocxSettings(FormatSettings):
 
     @classmethod
     def from_json(cls, filepath):
+        """
+                Десереализует класс
+                :param filepath: путь, по которому лежит json
+                :return: FormatSettings()
+                """
         with open(filepath, "r") as f:
             json_data = json.load(f)
         return cls(json_data['font_size'], json_data['font'], json_data['str_len'], json_data['h_separator'],

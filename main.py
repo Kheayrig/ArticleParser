@@ -12,6 +12,11 @@ settings = Settings()
 
 
 def get_formatter(extension):
+    """
+    Создаёт форматтер по переданному расширению(ищет настройки по пути в .env, иначе применяет дефолтные)
+    :param extension: расширение сохраняемого файла
+    :return: ToTxtFormatter(FormatSettings()) | ToDocxFormatter(DocxSettings())
+    """
     while True:
         match extension:
             case 'txt':
@@ -27,6 +32,11 @@ def get_formatter(extension):
 
 
 def get_path(url):
+    """
+    Преобразует url в частичный путь и имя файла
+    :param url: адрес страницы
+    :return: dict {path: частичный путь, filename: имя файла}
+    """
     url = PageGetter.cut_url(url)
     idx = url.rfind('/')
     if idx == -1:
@@ -44,7 +54,12 @@ def get_path(url):
 
 
 def parse_url(url, extension):
-    print(extension)
+    '''
+    Получает страницу по ссылке, парсит её(оставляет только основной текст), форматирует и сохраняет в файле
+    :param url: адрес страницы
+    :param extension: расширение документа при сохранении: docx или txt
+    :return: full_path - путь сохранённого файла
+    '''
     page = PageGetter.get_page(url)
     contents = ArticleParser.parse_html(page)
     if not contents:
@@ -58,6 +73,9 @@ def parse_url(url, extension):
 
 
 if __name__ == '__main__':
+    """
+    Получаем аргументы командной строки
+    """
     parser = argparse.ArgumentParser(description='Введите URL страницы, которую будем парсить.')
     parser.add_argument('url', type=str, help='URL страницы')
     parser.add_argument('--ext', type=str, help='Формат документа при сохранении: docx | txt (default)', default='txt')
