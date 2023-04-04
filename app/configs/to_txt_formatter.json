@@ -1,0 +1,7 @@
+{
+  "str_len": 80,
+  "h_separator": "\n\n",
+  "p_separator": "\n\n",
+  "a_has_link": true,
+  "link_brackets": "square"
+}
